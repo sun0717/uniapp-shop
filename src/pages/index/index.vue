@@ -42,8 +42,8 @@ const isLoading = ref(false)
 onLoad(async () => {
   isLoading.value = true
   await Promise.all([
-    getHomeBanner(), 
-    getHomeCategoryData(), 
+    getHomeBanner(),
+    getHomeCategoryData(),
     getHotData()])
   isLoading.value = false
 })
