@@ -21,7 +21,7 @@ onLoad(async () => {
 
 // 轮播图变化时
 const currentIndex = ref(0)
-const onChange:UniHelper.SwiperOnChange = (ev) => {
+const onChange: UniHelper.SwiperOnChange = (ev) => {
   // 获取下标
   currentIndex.value = ev.detail?.current
 }
@@ -34,6 +34,12 @@ const onTapImage = (url: string) => {
     urls: goods.value!.mainPictures
   })
 }
+
+// 弹出层
+const popup = ref<{
+  open: (type?: 'top' | 'bottom') => void
+  close: () => void
+}>()
 </script>
 
 <template>
@@ -44,7 +50,7 @@ const onTapImage = (url: string) => {
       <view class="preview">
         <swiper circular @change="onChange">
           <swiper-item v-for="item in goods?.mainPictures" :key="item">
-            <image mode="aspectFill" :src="item" @tap="onTapImage(item)"/>
+            <image mode="aspectFill" :src="item" @tap="onTapImage(item)" />
           </swiper-item>
         </swiper>
         <view class="indicator">
@@ -74,7 +80,7 @@ const onTapImage = (url: string) => {
           <text class="label">送至</text>
           <text class="text ellipsis"> 请选择收获地址 </text>
         </view>
-        <view class="item arrow">
+        <view class="item arrow" @tap="popup?.open()">
           <text class="label">服务</text>
           <text class="text ellipsis"> 无忧退 快速退款 免费包邮 </text>
         </view>
@@ -134,6 +140,38 @@ const onTapImage = (url: string) => {
       <view class="buynow"> 立即购买 </view>
     </view>
   </view>
+
+  <!-- uni-popup 弹出层 -->
+  <uni-popup ref="popup" type="bottom" background-color="#fff">
+    <view class="service-panel">
+      <!-- 关闭按钮 -->
+      <text class="close icon-close" @tap="popup?.close()"></text>
+      <!-- 标题 -->
+      <view class="title">服务说明</view>
+      <!-- 内容 -->
+      <view class="content">
+        <view class="item">
+          <view class="dt">无忧退货</view>
+          <view class="dd">
+            自收到商品之日起30天内，可在线申请无忧退货服务（食品等特殊商品除外）
+          </view>
+        </view>
+        <view class="item">
+          <view class="dt">快速退款</view>
+          <view class="dd">
+            收到退货包裹并确认无误后，将在48小时内办理退款，
+            退款将原路返回，不同银行处理时间不同，预计1-5个工作日到账
+          </view>
+        </view>
+        <view class="item">
+          <view class="dt">满88元免邮费</view>
+          <view class="dd">
+            单笔订单金额(不含运费)满88元可免邮费，不满88元， 单笔订单收取10元邮费
+          </view>
+        </view>
+      </view>
+    </view>
+  </uni-popup>
 </template>
 
 <style lang="scss">
@@ -449,6 +487,63 @@ page {
       display: block;
       font-size: 34rpx;
     }
+  }
+}
+
+.service-panel {
+  padding: 0 30rpx;
+  border-radius: 10rpx 10rpx 0 0;
+  position: relative;
+  background-color: #fff;
+}
+
+.title {
+  line-height: 1;
+  padding: 40rpx 0;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: normal;
+  border-bottom: 1rpx solid #ddd;
+  color: #444;
+}
+
+.close {
+  position: absolute;
+  right: 24rpx;
+  top: 24rpx;
+}
+
+.content {
+  padding: 20rpx 20rpx 100rpx 20rpx;
+
+  .item {
+    margin-top: 20rpx;
+  }
+
+  .dt {
+    margin-bottom: 10rpx;
+    font-size: 28rpx;
+    color: #333;
+    font-weight: 500;
+    position: relative;
+
+    &::before {
+      content: '';
+      width: 10rpx;
+      height: 10rpx;
+      border-radius: 50%;
+      background-color: #eaeaea;
+      transform: translateY(-50%);
+      position: absolute;
+      top: 50%;
+      left: -20rpx;
+    }
+  }
+
+  .dd {
+    line-height: 1.6;
+    font-size: 26rpx;
+    color: #999;
   }
 }
 </style>
