@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { BannerItem } from '@/types/home'
 // 获取轮播图数据
 import { getHomeBannerAPI } from '@/services/home'
 import { onLoad } from '@dcloudio/uni-app';
 import { getCategoryTopAPI } from '@/services/category'
+import PageSkeleton from '../index/components/PageSkeleton.vue';
 // 获取轮播图数据
 const bannerList = ref<BannerItem[]>([])
 const categoryTop = ref()
 const getBannerData = async () => {
-// 参数用 2 表示商品详情页的分类数据
-const res = await getHomeBannerAPI(2)
-bannerList.value = res.result
+  // 参数用 2 表示商品详情页的分类数据
+  const res = await getHomeBannerAPI(2)
+  bannerList.value = res.result
 }
 // 交互式数据
 const activeIndex = ref(0)
@@ -21,16 +22,25 @@ const getCategoryTopData = async () => {
   console.log(res)
   categoryTop.value = res.result
 }
-// 页面加载
-onLoad(() => {
-  getBannerData()
-  getCategoryTopData()
+// 基于当前下表提取关键数据
+// 提取当前二级分类数据
+const subCategoryList = computed(() => {
+  return categoryTop.value[activeIndex.value]?.children || []
 })
+// 是否数据加载完毕
+const isFinish = ref(false)
+// 页面加载
+onLoad(async () => {
+  await Promise.all([getBannerData(), getCategoryTopData()])
+  isFinish.value = true
+})
+
+
 
 </script>
 
 <template>
-  <view class="viewport">
+  <view class="viewport" v-if="isFinish">
     <!-- 搜索框 -->
     <view class="search">
       <view class="input">
@@ -41,7 +51,8 @@ onLoad(() => {
     <view class="categories">
       <!-- 左侧：一级分类 -->
       <scroll-view class="primary" scroll-y>
-        <view v-for="(item, index) in categoryTop" :key="item.id" class="item" :class="{ active: index === activeIndex }" @tap="activeIndex = index">
+        <view v-for="(item, index) in categoryTop" :key="item.id" class="item" :class="{ active: index === activeIndex }"
+          @tap="activeIndex = index">
           <text class="name"> {{ item.name }} </text>
         </view>
       </scroll-view>
@@ -50,18 +61,19 @@ onLoad(() => {
         <!-- 焦点图 -->
         <XtxSwiper class="banner" :list="bannerList" />
         <!-- 内容区域 -->
-        <view class="panel" v-for="item in 3" :key="item">
+        <view class="panel" v-for="item in subCategoryList" :key="item">
           <view class="title">
-            <text class="name">宠物用品</text>
+            <text class="name">{{ item.name }}</text>
             <navigator class="more" hover-class="none">全部</navigator>
           </view>
           <view class="section">
-            <navigator v-for="goods in 4" :key="goods" class="goods" hover-class="none" :url="`/pages/goods/goods?id=`">
-              <image class="image" src="https://yanxuan-item.nosdn.127.net/674ec7a88de58a026304983dd049ea69.jpg"></image>
-              <view class="name ellipsis">木天蓼逗猫棍</view>
+            <navigator v-for="goods in item.goods" :key="goods.id" class="goods" hover-class="none"
+              :url="`/pages/goods/goods?id=`">
+              <image class="image" :src="goods.picture"></image>
+              <view class="name ellipsis">{{ goods.name }}</view>
               <view class="price">
                 <text class="symbol">¥</text>
-                <text class="number">16.00</text>
+                <text class="number">{{ goods.price }}</text>
               </view>
             </navigator>
           </view>
@@ -69,6 +81,9 @@ onLoad(() => {
       </scroll-view>
     </view>
   </view>
+  <PageSkeleton v-else>
+
+  </PageSkeleton>
 </template>
 
 <style lang="scss">
