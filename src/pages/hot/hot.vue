@@ -21,12 +21,15 @@ const currUrlMap = hotMap.find(item => item.type === query.type)
 uni.setNavigationBarTitle({ title: currUrlMap!.title })
 
 const bannerPicture = ref<string>('')
-const subTypes = ref<SubTypeItem[]>()
+const subTypes = ref<(SubTypeItem & { finish?: boolean })[]>()
 // 高亮的下标
 const activeIndex = ref(0)
 // 获取热门推荐数据
 const getHotRecommendData = async () => {
-    const res = await getHotRecommendAPI(currUrlMap!.url)
+    const res = await getHotRecommendAPI(currUrlMap!.url, {
+        page: import.meta.env.DEV ? 30 : 1,
+        pageSize: 10
+    })
     console.log(res)
     bannerPicture.value = res.result.bannerPicture
     subTypes.value = res.result.subTypes
@@ -41,14 +44,24 @@ onLoad(() => {
 const onScrolltolower = async () => {
     // 获取当前选项
     const curresubTypes = subTypes.value[activeIndex.value]
-    // 当前页码累加
-    curresubTypes.goodsItems.page++
+
+    if (curresubTypes.goodsItems.page < curresubTypes.goodsItems.pages) {
+        // 当前页码累加
+        curresubTypes.goodsItems.page++
+    } else {
+        // 标记已结束
+        curresubTypes.finish = true
+        // 标记结束
+        return uni.showToast({ icon: 'none', title: '没有更多数据了~' })
+    }
+
     // 调用API传参
     const res = await getHotRecommendAPI(currUrlMap!.url, {
         subType: curresubTypes.id,
         page: curresubTypes.goodsItems.page,
         pageSize: curresubTypes.goodsItems.pageSize
     })
+    console.log(res)
     // 新的列表选项
     const newsubTypes = res.result.subTypes[activeIndex.value]
     // 数组追加
