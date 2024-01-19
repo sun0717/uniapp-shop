@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import AddressPanel from '@/pages/goods/components/AddressPanel.vue'
+import ServicePanel from '@/pages/goods/components/ServicePanel.vue'
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 import { getGoodsByIdAPI } from '@/services/goods'
@@ -40,6 +42,13 @@ const popup = ref<{
   open: (type?: 'top' | 'bottom') => void
   close: () => void
 }>()
+
+const popupName = ref<'address' | 'service'>()
+const openPopup = (name: typeof popupName.value) => {
+  // 修改弹出层名称
+  popupName.value = name
+  popup.value?.open()
+}
 </script>
 
 <template>
@@ -76,11 +85,11 @@ const popup = ref<{
           <text class="label">选择</text>
           <text class="text ellipsis"> 请选择商品规格 </text>
         </view>
-        <view class="item arrow">
+        <view class="item arrow" @tap="openPopup('address')">
           <text class="label">送至</text>
           <text class="text ellipsis"> 请选择收获地址 </text>
         </view>
-        <view class="item arrow" @tap="popup?.open()">
+        <view class="item arrow" @tap="openPopup('service')">
           <text class="label">服务</text>
           <text class="text ellipsis"> 无忧退 快速退款 免费包邮 </text>
         </view>
@@ -143,34 +152,8 @@ const popup = ref<{
 
   <!-- uni-popup 弹出层 -->
   <uni-popup ref="popup" type="bottom" background-color="#fff">
-    <view class="service-panel">
-      <!-- 关闭按钮 -->
-      <text class="close icon-close" @tap="popup?.close()"></text>
-      <!-- 标题 -->
-      <view class="title">服务说明</view>
-      <!-- 内容 -->
-      <view class="content">
-        <view class="item">
-          <view class="dt">无忧退货</view>
-          <view class="dd">
-            自收到商品之日起30天内，可在线申请无忧退货服务（食品等特殊商品除外）
-          </view>
-        </view>
-        <view class="item">
-          <view class="dt">快速退款</view>
-          <view class="dd">
-            收到退货包裹并确认无误后，将在48小时内办理退款，
-            退款将原路返回，不同银行处理时间不同，预计1-5个工作日到账
-          </view>
-        </view>
-        <view class="item">
-          <view class="dt">满88元免邮费</view>
-          <view class="dd">
-            单笔订单金额(不含运费)满88元可免邮费，不满88元， 单笔订单收取10元邮费
-          </view>
-        </view>
-      </view>
-    </view>
+    <ServicePanel v-if="popupName === 'service'" @close="popup?.close()"/>
+    <AddressPanel v-if="popupName === 'address'" @close="popup?.close()"/>
   </uni-popup>
 </template>
 
@@ -487,63 +470,6 @@ page {
       display: block;
       font-size: 34rpx;
     }
-  }
-}
-
-.service-panel {
-  padding: 0 30rpx;
-  border-radius: 10rpx 10rpx 0 0;
-  position: relative;
-  background-color: #fff;
-}
-
-.title {
-  line-height: 1;
-  padding: 40rpx 0;
-  text-align: center;
-  font-size: 32rpx;
-  font-weight: normal;
-  border-bottom: 1rpx solid #ddd;
-  color: #444;
-}
-
-.close {
-  position: absolute;
-  right: 24rpx;
-  top: 24rpx;
-}
-
-.content {
-  padding: 20rpx 20rpx 100rpx 20rpx;
-
-  .item {
-    margin-top: 20rpx;
-  }
-
-  .dt {
-    margin-bottom: 10rpx;
-    font-size: 28rpx;
-    color: #333;
-    font-weight: 500;
-    position: relative;
-
-    &::before {
-      content: '';
-      width: 10rpx;
-      height: 10rpx;
-      border-radius: 50%;
-      background-color: #eaeaea;
-      transform: translateY(-50%);
-      position: absolute;
-      top: 50%;
-      left: -20rpx;
-    }
-  }
-
-  .dd {
-    line-height: 1.6;
-    font-size: 26rpx;
-    color: #999;
   }
 }
 </style>
