@@ -52,7 +52,7 @@ const onAvatarChange = () => {
 }
 
 const onSubmit = async () => {
-    const { nickname, gender, birthday } = profile.value
+    const { nickname, gender, birthday } = profile.value;
     const res = await putMemberProfileAPI({
         nickname,
         gender,
@@ -69,7 +69,7 @@ const onSubmit = async () => {
     }, 500)
 }
 // 性别修改
-const onGenderChange: UniHelper.RadioGroupOnChange = async (ev) => {
+const onGenderChange: UniHelper.RadioGroupOnChange = (ev) => {
     profile.value.gender = ev.detail.value as Gender
 }
 // 生日修改
@@ -110,7 +110,7 @@ const onFullLocationChange: UniHelper.RegionPickerOnChange = (ev) => {
                 </view>
                 <view class="form-item">
                     <text class="label">昵称</text>
-                    <input class="input" type="text" placeholder="请填写昵称" v-model="profile?.nickname" />
+                    <input class="input" type="text" placeholder="请填写昵称" v-model="profile!.nickname" />
                 </view>
                 <view class="form-item">
                     <text class="label">性别</text>
@@ -143,7 +143,7 @@ const onFullLocationChange: UniHelper.RegionPickerOnChange = (ev) => {
                 </view>
                 <view class="form-item">
                     <text class="label">职业</text>
-                    <input class="input" type="text" placeholder="请填写职业" v-model="profile?.profession" />
+                    <input class="input" type="text" placeholder="请填写职业" v-model="profile!.profession" />
                 </view>
             </view>
             <!-- 提交按钮 -->
