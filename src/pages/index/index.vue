@@ -8,12 +8,13 @@ import CustomNavbar from './components/CustomNavbar.vue'
 import CategoryPanel from './components/CategoryPanel.vue'
 import HotPanel from './components/HotPanel.vue'
 import PageSkeleton from './components/PageSkeleton.vue'
+import { useGuessList } from '@/composables'
 
 const bannerList = ref<BannerItem[]>([])
 const categoryList = ref<CategoryItem[]>([])
 const hotList = ref<HotItem[]>([])
 // 获取组件实例
-const guessRef = ref<XtuGuessInstance>()
+// const guessRef = ref<XtuGuessInstance>()
 const getHomeBanner = async () => {
   const res: any = await getHomeBannerAPI()
   console.log(res)
@@ -33,10 +34,10 @@ const getHotData = async () => {
   hotList.value = res.result
 }
 
-const onScrolltolower = () => {
-  console.log('滚动触底')
-  guessRef.value?.getMore()
-}
+// const onScrolltolower = () => {
+//   console.log('滚动触底')
+//   guessRef.value?.getMore()
+// }
 const isLoading = ref(false)
 // 在页面里，相当于 onMounted()
 onLoad(async () => {
@@ -47,6 +48,8 @@ onLoad(async () => {
     getHotData()])
   isLoading.value = false
 })
+
+const { guessRef, onScrolltolower } = useGuessList()
 // 当前下拉刷新状态
 const isTriggered = ref(false)
 
