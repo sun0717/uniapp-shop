@@ -3,6 +3,7 @@
 const emit = defineEmits<{
     (event: 'close'): void
 }>()
+
 </script>
 
 <template>

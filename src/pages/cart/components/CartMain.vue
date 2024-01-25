@@ -91,7 +91,7 @@ const gotoPayment = () => {
     })
   }
   // 跳转到结算页
-  uni.showToast({ title: '等待完成' })
+  uni.navigateTo({ url: '/pagesOrder/create/create' })
 }
 </script>
 
@@ -151,8 +151,9 @@ const gotoPayment = () => {
         <text class="text">合计:</text>
         <text class="amount">{{ selectedCartListMoney }}</text>
         <view class="button-grounp">
-          <view class="button payment-button" :class="{ disabled: selectedCartListCount === 0 }"> 去结算({{
-            selectedCartListCount }}) </view>
+          <view class="button payment-button" :class="{ disabled: selectedCartListCount === 0 }" @tap="gotoPayment">
+            去结算({{
+              selectedCartListCount }}) </view>
         </view>
       </view>
     </template>
@@ -160,7 +161,7 @@ const gotoPayment = () => {
     <view class="login-blank" v-else>
       <text class="text">登录后可查看购物车中的商品</text>
       <navigator url="/pages/login/login" hover-class="none">
-        <button class="button" @tap="gotoPayment">去登录</button>
+        <button class="button">去登录</button>
       </navigator>
     </view>
     <!-- 猜你喜欢 -->

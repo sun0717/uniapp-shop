@@ -1,8 +1,14 @@
 <script setup lang="ts">
-//
+import { ref } from 'vue'
+import type { AddressItem } from '@/types/address'
 const emit = defineEmits<{
     (event: 'close'): void
 }>()
+
+const props = defineProps<{
+    address: AddressItem[]
+}>()
+
 </script>
 
 <template>
@@ -11,8 +17,9 @@ const emit = defineEmits<{
         <text class="close icon-close" @tap="emit('close')"></text>
         <!-- 标题 -->
         <view class="title">配送至</view>
+
         <!-- 内容 -->
-        <view class="content">
+        <!-- <view class="content">
             <view class="item">
                 <view class="user">李明 13824686868</view>
                 <view class="address">北京市顺义区后沙峪地区安平北街6号院</view>
@@ -27,6 +34,13 @@ const emit = defineEmits<{
                 <view class="user">张三 13824686868</view>
                 <view class="address">北京市朝阳区孙河安平北街6号院</view>
                 <text class="icon icon-ring"></text>
+            </view>
+        </view> -->
+        <view class="content">
+            <view class="item" v-for="item in props.address" :key="item.id">
+                <view class="user">{{ item.receiver }} {{ item.contact }}</view>
+                <view class="address">{{ item.address }}</view>
+                <text class="icon icon-checked"></text>
             </view>
         </view>
         <view class="footer">

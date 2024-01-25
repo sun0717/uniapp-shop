@@ -1,4 +1,4 @@
-import type { AddressItem } from './global'
+import type { AddressItem } from './goods'
 // 添加收货地址：请求参数
 export type AddressParams = {
     // 收货人姓名
