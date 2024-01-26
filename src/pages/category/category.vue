@@ -34,9 +34,6 @@ onLoad(async () => {
   await Promise.all([getBannerData(), getCategoryTopData()])
   isFinish.value = true
 })
-
-
-
 </script>
 
 <template>

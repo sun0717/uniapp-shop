@@ -92,8 +92,10 @@ const onOrderPay = async () => {
         // 开发环境模拟支付
         await getPayMockAPI({ orderId: query.id })
     } else {
+        // #ifdef MP-WEIXIN
         const res = await getPayWxPayMiniPayAPI({ orderId: query.id })
         wx.requestPayment(res.result)
+        // #endif
     }
     // 关闭当前页, 再跳转支付结果页
     uni.redirectTo({ url: `/pagesOrder/payment/payment?id=${query.id}` })
@@ -150,9 +152,11 @@ onLoad(() => {
     <!-- 自定义导航栏: 默认透明不可见, scroll-view 滚动到 50 时展示 -->
     <view class="navbar" :style="{ paddingTop: safeAreaInsets?.top + 'px' }">
         <view class="wrap">
+            <!-- #ifdef MP-WEIXIN -->
             <navigator v-if="pages.length > 1" open-type="navigateBack" class="back icon-left"></navigator>
             <navigator v-else url="/pages/index/index" open-type="switchTab" class="back icon-home">
             </navigator>
+            <!-- #endif -->
             <view class="title">订单详情</view>
         </view>
     </view>

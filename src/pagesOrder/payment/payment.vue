@@ -15,6 +15,7 @@ const { guessRef, onScrolltolower } = useGuessList()
         <!-- 订单状态 -->
         <view class="overview">
             <view class="status icon-checked">支付成功</view>
+            <!-- #ifdef MP-WEIXIN -->
             <view class="buttons">
                 <navigator hover-class="none" class="button navigator" url="/pages/index/index" open-type="switchTab">
                     返回首页
@@ -24,6 +25,7 @@ const { guessRef, onScrolltolower } = useGuessList()
                     查看订单
                 </navigator>
             </view>
+            <!-- #endif -->
         </view>
 
         <!-- 猜你喜欢 -->

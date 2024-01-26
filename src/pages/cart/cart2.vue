@@ -8,4 +8,7 @@ import CartMain from './components/CartMain.vue'
 
 <style lang="scss">
 // 根元素
+page {
+    height: 100%;
+}
 </style>

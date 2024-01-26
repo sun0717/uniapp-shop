@@ -106,7 +106,7 @@ const selectArrText = computed(() => {
   return skuPopupRef.value?.selectArr?.join(' ').trim() || '请选择商品规格'
 })
 const selectAddrText = computed(() => {
-  return addressStore.value?.address || '请选择收货地址'
+  return addressStore.value?.selectedAddress.receiver || '请选择收货地址'
 })
 // 加入购物车
 const onAddCart = async (ev: SkuPopupEvent) => {
@@ -222,12 +222,15 @@ onLoad(async () => {
   <view class="toolbar" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
     <view class="icons">
       <button class="icons-button"><text class="icon-heart"></text>收藏</button>
+      <!-- #ifdef MP-WEIXIN -->
       <button class="icons-button" open-type="contact">
         <text class="icon-handset"></text>客服
       </button>
       <navigator class="icons-button" url="/pages/cart/cart2" open-type="navigate">
         <text class="icon-cart"></text>购物车
       </navigator>
+      <!-- #endif -->
+
     </view>
     <view class="buttons">
       <view class="addcart" @tap="openSkuPopup(SkuMode.Cart)"> 加入购物车 </view>

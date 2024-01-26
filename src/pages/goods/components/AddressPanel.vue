@@ -37,10 +37,10 @@ const props = defineProps<{
             </view>
         </view> -->
         <view class="content">
-            <view class="item" v-for="item in props.address" :key="item.id">
+            <view class="item" v-for="item in props.address " :key="item.id" @tap="onChange">
                 <view class="user">{{ item.receiver }} {{ item.contact }}</view>
                 <view class="address">{{ item.address }}</view>
-                <text class="icon icon-checked"></text>
+                <text class="icon" :class="item.isDefault === 1 ? 'icon-checked' : 'icon-ring'"></text>
             </view>
         </view>
         <view class="footer">

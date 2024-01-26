@@ -27,6 +27,7 @@ const onChangeDelivery: UniHelper.SelectorPickerOnChange = (ev) => {
 const orderPre = ref<OrderPreResult>()
 // 收货地址
 const addressStore = useAddressStore()
+// 获取默认选中地址
 const selectedAddress = computed(() => {
     return addressStore.selectedAddress || orderPre.value?.userAddresses.find(v => v.isDefault)
 })
@@ -38,7 +39,6 @@ const query = defineProps<{
 
 const getMemberOrderPreData = async () => {
     if (query.count && query.skuId) {
-        console.log(res)
         const res = await getMemberOrderPreNowAPI({
             count: query.count,
             skuId: query.skuId
@@ -71,6 +71,7 @@ const onOrderSubmit = async () => {
     // 关闭当前页面，跳转到订单详情，传递订单id
     uni.redirectTo({ url: `/pagesOrder/detail/detail?id=${res.result.id}` })
 }
+
 onLoad(() => {
     getMemberOrderPreData()
 })

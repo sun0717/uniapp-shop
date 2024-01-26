@@ -20,6 +20,7 @@ onLoad(() => {
 })
 
 const onAvatarChange = () => {
+    // #ifdef MP-WEIXIN
     // 调用拍照/选择图片
     uni.chooseMedia({
         // 文件个数
@@ -49,8 +50,39 @@ const onAvatarChange = () => {
             })
         }
     })
-}
+    // #endif
 
+    // #ifdef H5 || APP-PLUS
+    uni.chooseImage({
+        count: 1,
+        success: (res) => {
+            const tempFilePath = res.tempFilePaths[0]
+            uploadFile(tempFilePath)
+        }
+    })
+    // #endif
+}
+// 文件上传 封装
+const uploadFile = (tempFilePath: string) => {
+    // 文件上传
+    uni.uploadFile({
+        url: '/member/profile/avatar',
+        name: 'file',
+        filePath: tempFilePath,
+        success: (res) => {
+            if (res.statusCode === 200) {
+                const { avatar } = JSON.parse(res.data).result
+                // 当前页面更新头像
+                profile.value!.avatar = avatar
+                // Store 头像更新
+                memberStore.profile!.avatar = avatar
+                uni.showToast({ icon: 'success', title: '更新成功' })
+            } else {
+                uni.showToast({ icon: 'error', title: '出现错误' })
+            }
+        }
+    })
+}
 const onSubmit = async () => {
     const { nickname, gender, birthday } = profile.value;
     const res = await putMemberProfileAPI({
@@ -82,7 +114,7 @@ const onFullLocationChange: UniHelper.RegionPickerOnChange = (ev) => {
     // 修改前端界面
     profile.value.fullLocation = ev.detail.value.join(' ')
     // 提交后端更新
-    fullLocationCode = ev.detail.code! 
+    fullLocationCode = ev.detail.code!
 }
 </script>
 
@@ -90,7 +122,10 @@ const onFullLocationChange: UniHelper.RegionPickerOnChange = (ev) => {
     <view class="viewport">
         <!-- 导航栏 -->
         <view class="navbar" :style="{ paddingTop: safeAreaInsets?.top + 'px' }">
+            <!-- #ifdef MP-WEIXIN -->
             <navigator open-type="navigateBack" class="back icon-left" hover-class="none"></navigator>
+            <!-- #endif -->
+
             <view class="title">个人信息</view>
         </view>
         <!-- 头像 -->
